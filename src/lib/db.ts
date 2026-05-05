@@ -61,6 +61,12 @@ export interface FuelLog {
   photo?: string;
 }
 
+export interface Aircraft {
+  id?: number;
+  registration: string;
+  type: string;
+}
+
 interface AviaDB extends DBSchema {
   users: {
     key: number;
@@ -83,6 +89,10 @@ interface AviaDB extends DBSchema {
     key: number;
     value: FuelLog;
   };
+  aircrafts: {
+    key: number;
+    value: Aircraft;
+  };
 }
 
 export async function hashPassword(password: string): Promise<string> {
@@ -96,14 +106,27 @@ let dbPromise: Promise<IDBPDatabase<AviaDB>>;
 
 export function getDB() {
   if (!dbPromise) {
-    dbPromise = openDB<AviaDB>('AviationDB', 1, {
+    dbPromise = openDB<AviaDB>('AviationDB', 2, {
       upgrade(db) {
-        const userStore = db.createObjectStore('users', { keyPath: 'id', autoIncrement: true });
-        userStore.createIndex('by-login', 'login', { unique: true });
-        db.createObjectStore('defects', { keyPath: 'id', autoIncrement: true });
-        db.createObjectStore('cards', { keyPath: 'id', autoIncrement: true });
-        db.createObjectStore('logbooks', { keyPath: 'id', autoIncrement: true });
-        db.createObjectStore('fuels', { keyPath: 'id', autoIncrement: true });
+        if (!db.objectStoreNames.contains('users')) {
+          const userStore = db.createObjectStore('users', { keyPath: 'id', autoIncrement: true });
+          userStore.createIndex('by-login', 'login', { unique: true });
+        }
+        if (!db.objectStoreNames.contains('defects')) {
+          db.createObjectStore('defects', { keyPath: 'id', autoIncrement: true });
+        }
+        if (!db.objectStoreNames.contains('cards')) {
+          db.createObjectStore('cards', { keyPath: 'id', autoIncrement: true });
+        }
+        if (!db.objectStoreNames.contains('logbooks')) {
+          db.createObjectStore('logbooks', { keyPath: 'id', autoIncrement: true });
+        }
+        if (!db.objectStoreNames.contains('fuels')) {
+          db.createObjectStore('fuels', { keyPath: 'id', autoIncrement: true });
+        }
+        if (!db.objectStoreNames.contains('aircrafts')) {
+          db.createObjectStore('aircrafts', { keyPath: 'id', autoIncrement: true });
+        }
       },
     }).then(async (db) => {
       // Seed default admin
@@ -117,6 +140,14 @@ export function getDB() {
           position: 'Администратор',
           role: 'admin',
         });
+      }
+      const aircrafts = await db.getAll('aircrafts');
+      if (aircrafts.length === 0) {
+        await Promise.all([
+          db.add('aircrafts', { registration: 'RA-06191', type: 'Ми-8МТВ-1' }),
+          db.add('aircrafts', { registration: 'RA-22345', type: 'Ми-8АМТШ' }),
+          db.add('aircrafts', { registration: 'RA-67890', type: 'Ми-8МТ' }),
+        ]);
       }
       return db;
     });
@@ -151,4 +182,10 @@ export const API = {
   // Fuels
   addFuel: async (fuel: FuelLog) => (await getDB()).add('fuels', fuel),
   getAllFuels: async () => (await getDB()).getAll('fuels'),
+
+  // Aircrafts
+  addAircraft: async (aircraft: Aircraft) => (await getDB()).add('aircrafts', aircraft),
+  updateAircraft: async (aircraft: Aircraft) => (await getDB()).put('aircrafts', aircraft),
+  deleteAircraft: async (id: number) => (await getDB()).delete('aircrafts', id),
+  getAllAircrafts: async () => (await getDB()).getAll('aircrafts'),
 };

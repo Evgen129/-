@@ -1,1 +1,9 @@
 @import "tailwindcss";
+
+:root.glove-mode button,
+:root.glove-mode input,
+:root.glove-mode select,
+:root.glove-mode textarea {
+  min-height: 3.5rem;
+  font-size: 1.125rem;
+}

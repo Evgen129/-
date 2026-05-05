@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
 import { useAuth } from '../lib/auth';
 import { API, hashPassword } from '../lib/db';
 import { PlaneTakeoff } from 'lucide-react';
@@ -12,7 +12,7 @@ export function Login() {
   const [position, setPosition] = useState('');
   const [error, setError] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError('');
 

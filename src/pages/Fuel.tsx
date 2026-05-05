@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, type ChangeEvent, type FormEvent } from 'react';
 import { API, FuelLog } from '../lib/db';
+import { AircraftSelect } from '../lib/aircrafts';
 import { Plus, X, Camera } from 'lucide-react';
 
 export function Fuel() {
@@ -8,7 +9,7 @@ export function Fuel() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Form
-  const [board, setBoard] = useState('RA-12345');
+  const [board, setBoard] = useState('');
   const [fuelType, setFuelType] = useState('Т-1 / ТС-1');
   const [passportNumber, setPassportNumber] = useState('');
   const [checkClean, setCheckClean] = useState(false);
@@ -22,7 +23,7 @@ export function Fuel() {
     setLogs((await API.getAllFuels()).reverse());
   };
 
-  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoUpload = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
@@ -31,7 +32,7 @@ export function Fuel() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     await API.addFuel({
       date: new Date().toISOString().split('T')[0],
@@ -57,7 +58,7 @@ export function Fuel() {
             <button type="button" onClick={() => setIsFormOpen(false)}><X className="h-5 w-5"/></button>
           </div>
           <div className="grid grid-cols-2 gap-4">
-             <input placeholder="Борт" value={board} onChange={e=>setBoard(e.target.value)} required className="rounded bg-slate-900 p-2 text-sm border border-slate-700"/>
+             <AircraftSelect value={board} onChange={setBoard} required className="rounded bg-slate-900 p-2 text-sm border border-slate-700"/>
              <input placeholder="Марка топлива" value={fuelType} onChange={e=>setFuelType(e.target.value)} required className="rounded bg-slate-900 p-2 text-sm border border-slate-700"/>
           </div>
           <input placeholder="№ Паспорта" value={passportNumber} onChange={e=>setPassportNumber(e.target.value)} required className="w-full rounded bg-slate-900 p-2 text-sm border border-slate-700"/>

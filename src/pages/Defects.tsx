@@ -1,11 +1,13 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, type ChangeEvent, type FormEvent } from 'react';
 import { API, Defect } from '../lib/db';
 import { useAuth } from '../lib/auth';
 import { Plus, X, Camera, Check } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { useAircraftOptions } from '../lib/aircrafts';
 
 export function Defects() {
   const { user } = useAuth();
+  const { aircraftOptions } = useAircraftOptions();
   const [defects, setDefects] = useState<Defect[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   
@@ -30,7 +32,7 @@ export function Defects() {
     else setDefects(all.filter(d => d.mechanicName === user?.name).reverse());
   };
 
-  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoUpload = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
@@ -41,7 +43,7 @@ export function Defects() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const newDefect: Defect = {
       number: `ДВ-${Date.now().toString().slice(-6)}`,
@@ -93,8 +95,11 @@ export function Defects() {
               <label className="block text-xs font-medium text-slate-400 mb-1">Бортовой номер</label>
               <select value={board} onChange={e => setBoard(e.target.value)} required className="w-full rounded bg-slate-900 p-2 text-sm border border-slate-700 focus:border-blue-500">
                 <option value="">Выберите борт...</option>
-                <option value="RA-12345">RA-12345</option>
-                <option value="RA-67890">RA-67890</option>
+                {aircraftOptions.map(aircraft => (
+                  <option key={aircraft.id ?? aircraft.registration} value={aircraft.registration}>
+                    {aircraft.registration} ({aircraft.type})
+                  </option>
+                ))}
               </select>
             </div>
             <div>

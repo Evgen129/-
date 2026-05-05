@@ -1,15 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type FormEvent } from 'react';
 import { API, LogbookEntry } from '../lib/db';
 import { useAuth } from '../lib/auth';
 import { Plus, X } from 'lucide-react';
+import { useAircraftOptions } from '../lib/aircrafts';
 
 export function Logbook() {
   const { user } = useAuth();
   const [logs, setLogs] = useState<LogbookEntry[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const { aircrafts, defaultBoard } = useAircraftOptions();
 
   // Form
-  const [board, setBoard] = useState('RA-12345');
+  const [board, setBoard] = useState('');
   const [captain, setCaptain] = useState('');
   const [description, setDescription] = useState('');
   const [actions, setActions] = useState('');
@@ -18,12 +20,18 @@ export function Logbook() {
     loadLogs();
   }, []);
 
+  useEffect(() => {
+    if (!board && defaultBoard) {
+      setBoard(defaultBoard);
+    }
+  }, [board, defaultBoard]);
+
   const loadLogs = async () => {
     const all = await API.getAllLogbooks();
     setLogs(all.reverse());
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     await API.addLogbook({
       date: new Date().toISOString().split('T')[0],
@@ -55,7 +63,14 @@ export function Logbook() {
             <button type="button" onClick={() => setIsFormOpen(false)}><X className="h-5 w-5"/></button>
           </div>
           <div className="grid grid-cols-2 gap-4">
-             <input placeholder="Борт" value={board} onChange={e=>setBoard(e.target.value)} required className="rounded bg-slate-900 p-2 text-sm border border-slate-700"/>
+             <select value={board} onChange={e=>setBoard(e.target.value)} required className="rounded bg-slate-900 p-2 text-sm border border-slate-700">
+              <option value="">Выбрать борт...</option>
+              {aircrafts.map(aircraft => (
+                <option key={aircraft.id ?? aircraft.registration} value={aircraft.registration}>
+                  {aircraft.registration} ({aircraft.type})
+                </option>
+              ))}
+             </select>
              <input placeholder="Командир" value={captain} onChange={e=>setCaptain(e.target.value)} required className="rounded bg-slate-900 p-2 text-sm border border-slate-700"/>
           </div>
           <textarea placeholder="Неисправность в полёте" value={description} onChange={e=>setDescription(e.target.value)} required className="w-full h-16 rounded bg-slate-900 p-2 text-sm border border-slate-700"/>
