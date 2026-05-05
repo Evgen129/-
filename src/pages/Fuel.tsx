@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { API, FuelLog } from '../lib/db';
+import { AircraftSelect } from '../lib/aircrafts';
 import { Plus, X, Camera } from 'lucide-react';
 
 export function Fuel() {
@@ -8,7 +9,7 @@ export function Fuel() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Form
-  const [board, setBoard] = useState('RA-12345');
+  const [board, setBoard] = useState('');
   const [fuelType, setFuelType] = useState('Т-1 / ТС-1');
   const [passportNumber, setPassportNumber] = useState('');
   const [checkClean, setCheckClean] = useState(false);
@@ -57,7 +58,7 @@ export function Fuel() {
             <button type="button" onClick={() => setIsFormOpen(false)}><X className="h-5 w-5"/></button>
           </div>
           <div className="grid grid-cols-2 gap-4">
-             <input placeholder="Борт" value={board} onChange={e=>setBoard(e.target.value)} required className="rounded bg-slate-900 p-2 text-sm border border-slate-700"/>
+             <AircraftSelect value={board} onChange={setBoard} required className="rounded bg-slate-900 p-2 text-sm border border-slate-700"/>
              <input placeholder="Марка топлива" value={fuelType} onChange={e=>setFuelType(e.target.value)} required className="rounded bg-slate-900 p-2 text-sm border border-slate-700"/>
           </div>
           <input placeholder="№ Паспорта" value={passportNumber} onChange={e=>setPassportNumber(e.target.value)} required className="w-full rounded bg-slate-900 p-2 text-sm border border-slate-700"/>

@@ -3,9 +3,11 @@ import { API, Defect } from '../lib/db';
 import { useAuth } from '../lib/auth';
 import { Plus, X, Camera, Check } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { useAircraftOptions } from '../lib/aircrafts';
 
 export function Defects() {
   const { user } = useAuth();
+  const { aircraftOptions } = useAircraftOptions();
   const [defects, setDefects] = useState<Defect[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   
@@ -93,8 +95,11 @@ export function Defects() {
               <label className="block text-xs font-medium text-slate-400 mb-1">Бортовой номер</label>
               <select value={board} onChange={e => setBoard(e.target.value)} required className="w-full rounded bg-slate-900 p-2 text-sm border border-slate-700 focus:border-blue-500">
                 <option value="">Выберите борт...</option>
-                <option value="RA-12345">RA-12345</option>
-                <option value="RA-67890">RA-67890</option>
+                {aircraftOptions.map(aircraft => (
+                  <option key={aircraft.id ?? aircraft.registration} value={aircraft.registration}>
+                    {aircraft.registration} ({aircraft.type})
+                  </option>
+                ))}
               </select>
             </div>
             <div>

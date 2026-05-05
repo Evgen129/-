@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react';
 import { API, WorkCard } from '../lib/db';
 import { useAuth } from '../lib/auth';
 import { Plus, X, Ban } from 'lucide-react';
-import { cn } from '../lib/utils';
+import { useAircraftOptions } from '../lib/aircrafts';
 
 export function Cards() {
   const { user } = useAuth();
   const [cards, setCards] = useState<WorkCard[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const { aircraftOptions } = useAircraftOptions();
 
   // Form State
   const [type, setType] = useState<'851' | '853'>('851');
@@ -78,8 +79,11 @@ export function Cards() {
               <label className="mb-1 block text-xs font-medium text-slate-400">Бортовой номер</label>
               <select value={board} onChange={e => setBoard(e.target.value)} required className="w-full rounded bg-slate-900 p-2 text-sm border border-slate-700 focus:border-blue-500">
                 <option value="">Выбрать...</option>
-                <option value="RA-12345">RA-12345</option>
-                <option value="RA-67890">RA-67890</option>
+                {aircraftOptions.map(aircraft => (
+                  <option key={aircraft.id ?? aircraft.registration} value={aircraft.registration}>
+                    {aircraft.registration} ({aircraft.type})
+                  </option>
+                ))}
               </select>
             </div>
           </div>

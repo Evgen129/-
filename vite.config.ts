@@ -13,9 +13,9 @@ export default defineConfig(({mode}) => {
       VitePWA({
         registerType: 'autoUpdate',
         manifest: {
-          name: 'Авиатехник: Дефектовка и ТО',
-          short_name: 'Авиатехник',
-          description: 'PWA-приложение для вертолётов Ми-8',
+          name: 'Ми-8: Авиатехник v9.0 - ТВ3-117ВМ',
+          short_name: 'Авиатехник Ми-8',
+          description: 'PWA-приложение авиатехника Ми-8 с базой ТВ3-117ВМ',
           theme_color: '#0f172a',
           background_color: '#0f172a',
           display: 'standalone',
