@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './lib/auth';
 import { Layout } from './components/Layout';
@@ -15,7 +16,7 @@ import { Aircrafts } from './pages/Aircrafts';
 import { KnowledgeBase } from './pages/KnowledgeBase';
 import { Settings } from './pages/Settings';
 
-function ProtectedRoute({ children, reqAdmin = false }: { children: React.ReactNode, reqAdmin?: boolean }) {
+function ProtectedRoute({ children, reqAdmin = false }: { children: ReactNode, reqAdmin?: boolean }) {
   const { user } = useAuth();
   if (!user) return <Navigate to="/login" replace />;
   if (reqAdmin && user.role !== 'admin') return <Navigate to="/" replace />;

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { FormEvent, useState, useEffect } from 'react';
 import { API, WorkCard } from '../lib/db';
 import { useAuth } from '../lib/auth';
 import { Plus, X, Ban } from 'lucide-react';
@@ -28,7 +28,7 @@ export function Cards() {
     else setCards(all.filter(c => c.performers.includes(user?.name || '')).reverse());
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const newCard: WorkCard = {
       number: `КН-${Date.now().toString().slice(-6)}`,

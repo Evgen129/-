@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type FormEvent } from 'react';
 import { API, LogbookEntry } from '../lib/db';
 import { useAuth } from '../lib/auth';
 import { Plus, X } from 'lucide-react';
@@ -31,7 +31,7 @@ export function Logbook() {
     setLogs(all.reverse());
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     await API.addLogbook({
       date: new Date().toISOString().split('T')[0],

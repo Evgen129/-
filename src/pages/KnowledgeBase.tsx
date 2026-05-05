@@ -12,6 +12,7 @@ import {
   Wrench,
   Zap,
 } from 'lucide-react';
+import type { ComponentType } from 'react';
 
 type TableData = {
   headers: string[];
@@ -28,7 +29,7 @@ type KnowledgeBlock = {
 type KnowledgeSection = {
   title: string;
   subtitle?: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: ComponentType<{ className?: string }>;
   accent: string;
   blocks: KnowledgeBlock[];
 };
@@ -445,7 +446,7 @@ function KnowledgeTable({ table }: { table: TableData }) {
   );
 }
 
-function KnowledgeCard({ block }: { block: KnowledgeBlock }) {
+function KnowledgeCard({ block }: { block: KnowledgeBlock; key?: string }) {
   return (
     <section className="rounded-xl border border-slate-700 bg-slate-800 p-4 shadow-sm">
       <h2 className="mb-3 text-lg font-semibold text-slate-100">{block.title}</h2>

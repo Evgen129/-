@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { MouseEvent, useEffect, useState } from 'react';
 import { Download } from 'lucide-react';
 
 export function InstallPWA() {
@@ -15,7 +15,7 @@ export function InstallPWA() {
     return () => window.removeEventListener('beforeinstallprompt', handler);
   }, []);
 
-  const onClick = (evt: React.MouseEvent<HTMLButtonElement>) => {
+  const onClick = (evt: MouseEvent<HTMLButtonElement>) => {
     evt.preventDefault();
     if (!promptInstall) return;
     promptInstall.prompt();

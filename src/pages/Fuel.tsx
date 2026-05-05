@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, type ChangeEvent, type FormEvent } from 'react';
 import { API, FuelLog } from '../lib/db';
 import { AircraftSelect } from '../lib/aircrafts';
 import { Plus, X, Camera } from 'lucide-react';
@@ -23,7 +23,7 @@ export function Fuel() {
     setLogs((await API.getAllFuels()).reverse());
   };
 
-  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoUpload = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
@@ -32,7 +32,7 @@ export function Fuel() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     await API.addFuel({
       date: new Date().toISOString().split('T')[0],

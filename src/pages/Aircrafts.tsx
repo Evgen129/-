@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { API, Aircraft } from '../lib/db';
 import { useAuth } from '../lib/auth';
 import { Plane, Plus, Trash2 } from 'lucide-react';
@@ -19,7 +19,7 @@ export function Aircrafts() {
     setAircrafts((await API.getAllAircrafts()).sort((a, b) => a.registration.localeCompare(b.registration)));
   };
 
-  const addAircraft = async (event: React.FormEvent) => {
+  const addAircraft = async (event: FormEvent) => {
     event.preventDefault();
     const nextRegistration = registration.trim().toUpperCase();
     const nextType = type.trim() || 'Ми-8';

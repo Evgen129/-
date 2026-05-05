@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, type ChangeEvent, type FormEvent } from 'react';
 import { API, Defect } from '../lib/db';
 import { useAuth } from '../lib/auth';
 import { Plus, X, Camera, Check } from 'lucide-react';
@@ -32,7 +32,7 @@ export function Defects() {
     else setDefects(all.filter(d => d.mechanicName === user?.name).reverse());
   };
 
-  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoUpload = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
@@ -43,7 +43,7 @@ export function Defects() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const newDefect: Defect = {
       number: `ДВ-${Date.now().toString().slice(-6)}`,
