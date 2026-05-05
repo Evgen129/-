@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { User } from './db';
+import type { User } from './db';
+import { parseStoredUser, USER_STORAGE_KEY } from './storedUser';
 
 interface AuthContextType {
   user: User | null;
@@ -14,21 +15,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    const storedUser = localStorage.getItem(USER_STORAGE_KEY);
+    const parsedUser = parseStoredUser(storedUser);
+
+    if (parsedUser) {
+      setUser(parsedUser);
+    } else if (storedUser !== null) {
+      localStorage.removeItem(USER_STORAGE_KEY);
     }
+
     setLoading(false);
   }, []);
 
   const login = (userData: User) => {
     setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
+    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(userData));
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('user');
+    localStorage.removeItem(USER_STORAGE_KEY);
   };
 
   if (loading) return null;
